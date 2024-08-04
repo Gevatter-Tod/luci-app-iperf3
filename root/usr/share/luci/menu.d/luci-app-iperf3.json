@@ -1,0 +1,13 @@
+{
+    "admin/services/iperf3": {
+        "title": "iPerf3",
+        "action": {
+            "type": "view",
+            "path": "iperf3/index"
+        },
+        "order": 10,
+        "depends": {
+            "acl": ["luci-app-iperf3"]
+        }
+    }
+}

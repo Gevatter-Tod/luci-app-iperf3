@@ -1,0 +1,21 @@
+{
+    "luci-app-iperf3": {
+        "description": "Grant access to iPerf3",
+        "read": {
+            "uci": ["iperf3"],
+            "fs": ["exec"],
+            "file": {
+                "/usr/bin/iperf3": ["exec"],
+                "/usr/bin/killall": ["exec"]
+            }        
+        },
+        "write": {
+            "uci": ["iperf3"],
+            "fs": ["exec"],
+            "file": {
+                "/usr/bin/iperf3": ["exec"],
+                "/usr/bin/killall": ["exec"]
+            }
+        }
+    }
+}
