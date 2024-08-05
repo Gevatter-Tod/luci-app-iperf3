@@ -1,4 +1,4 @@
 config iperf3 'settings'
-    option server '127.0.0.1'
+    option server '192.168.1.1'
     option port '5201'
     option reverse '0'
