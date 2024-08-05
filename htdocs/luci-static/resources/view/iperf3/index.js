@@ -56,14 +56,41 @@ return view.extend({
         var server = uci.get_first('iperf3', 'iperf3', 'server');
         var port = uci.get_first('iperf3', 'iperf3', 'port') || '5201';
         // var reverse = uci.get_first('iperf3', 'iperf3', 'reverse') ? '-R' : '';
-    
-        fs.exec('/usr/bin/iperf3', ['-c', server, '-p', port]).then(function(res) {
+        
+        var modalContent = ui.showModal(_('iPerf3 Test Results'), [E('div', { 'class': 'cbi-section' }),
+            E('p', _('running...')),
+            E('button', {
+                'class': 'btn',
+                'click': function() {
+                    ui.hideModal();
+                }
+            }, _('Dismiss'))
+            ]);
+        
+            fs.exec('/usr/bin/iperf3', ['-c', server, '-p', port]).then(function(res) {
                 // Check if res.stdout is defined
-                if (res.stdout && res.stdout.length > 0) {
-                    document.getElementById('iperf3-results').innerText = res.stdout.trim();
-                } else {
+                if (res.stdout && res.stdout.length > 0){
+                    modalContent.removeChild(modalContent.lastChild);
+                    modalContent.removeChild(modalContent.lastChild);
+                    modalContent.appendChild(E('pre', [res.stdout]));
+                    modalContent.appendChild(E('button', {
+                        'class': 'btn',
+                        'click': function() {
+                            ui.hideModal();
+                        }
+                    }, _('Dismiss')));
+                }
+                else {
                     // Handle case where stdout is undefined or empty
-                    ui.addNotification(null, _('Failed to start iPerf3 test: No output received'), 'error');
+                    modalContent.removeChild(modalContent.lastChild);
+                    modalContent.removeChild(modalContent.lastChild);
+                    modalContent.appendChild(E('p', 'Failed to start iPerf3 test: No output received'));
+                    modalContent.appendChild(E('button', {
+                        'class': 'btn',
+                        'click': function() {
+                            ui.hideModal();
+                        }
+                    }, _('Dismiss')));
                 }
             })
             .catch(function(err) {
@@ -71,6 +98,7 @@ return view.extend({
                 ui.addNotification(null, _('Failed to start iPerf3 test: ') + err.message, 'error');
             });
     },
+
 
     handleStartServer: function() {
         fs.exec('/usr/bin/iperf3', ['-s', '-D']).then(function(res) {
