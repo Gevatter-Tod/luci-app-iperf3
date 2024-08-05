@@ -55,10 +55,10 @@ return view.extend({
     handleStartTest: function() {
         var server = uci.get_first('iperf3', 'iperf3', 'server');
         var port = uci.get_first('iperf3', 'iperf3', 'port') || '5201';
-        // var reverse = uci.get_first('iperf3', 'iperf3', 'reverse') ? '-R' : '';
+        var reverse = uci.get_first('iperf3', 'iperf3', 'reverse') ? '-R' : '';
         
         var modalContent = ui.showModal(_('iPerf3 Test Results'), [E('div', { 'class': 'cbi-section' }),
-            E('p', _('running...')),
+            E('p', _('running... Will take a bit...')),
             E('button', {
                 'class': 'btn',
                 'click': function() {
@@ -67,7 +67,7 @@ return view.extend({
             }, _('Dismiss'))
             ]);
         
-            fs.exec('/usr/bin/iperf3', ['-c', server, '-p', port]).then(function(res) {
+            fs.exec('/usr/bin/iperf3', ['-c', server, '-p', port, reverse]).then(function(res) {
                 // Check if res.stdout is defined
                 if (res.stdout && res.stdout.length > 0){
                     modalContent.removeChild(modalContent.lastChild);
@@ -101,7 +101,8 @@ return view.extend({
 
 
     handleStartServer: function() {
-        fs.exec('/usr/bin/iperf3', ['-s', '-D']).then(function(res) {
+        var port = uci.get_first('iperf3', 'iperf3', 'port') || '5201';
+        fs.exec('/usr/bin/iperf3', ['-s', '-D', '-p', port]).then(function(res) {
             ui.addNotification(null, _('iPerf3 server started successfully'), 'info');
         }).catch(function(err) {
             ui.addNotification(null, _('Failed to start iPerf3 server: ') + err.message, 'error');
@@ -112,7 +113,7 @@ return view.extend({
         var command = `killall iperf3`;
 
         fs.exec_direct('killall', ['iperf3']).then(function(res) {
-            ui.addNotification(null, _('iPerf3 server stopped successfully'), 'info');
+            ui.addNotification(null, _('iPerf3 stopped successfully'), 'info');
         }).catch(function(err) {
             ui.addNotification(null, _('Failed to stop iPerf3 server: ') + err.message, 'error');
         });
