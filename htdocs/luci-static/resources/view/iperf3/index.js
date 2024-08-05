@@ -3,6 +3,7 @@
 'require form';
 'require fs';
 'require ui';
+'require uci';
 
 return view.extend({
     load: function() {
@@ -19,7 +20,7 @@ return view.extend({
 
         o = s.option(form.Value, 'server', _('Server'), _('The iPerf3 server to connect to.'));
         o.datatype = 'host';
-
+        
         o = s.option(form.Value, 'port', _('Port'), _('The port to use for the iPerf3 connection.'));
         o.datatype = 'port';
         o.placeholder = '5201';
@@ -28,39 +29,35 @@ return view.extend({
         o.default = o.disabled;
 
         // Add a button to start the iperf3 test
-        o = s.option(form.Button, '_start', _('Start Test'));
-        o.inputtitle = _('Start iPerf3 Test');
+        o = s.option(form.Button, '_start', _('Start Client Mode'));
+        o.inputtitle = _('Start iPerf3 Client');
         o.onclick = this.handleStartTest;
 
         // Add a button to start the iperf3 server
-        o = s.option(form.Button, '_start_server', _('Start Server'));
+        o = s.option(form.Button, '_start_server', _('Start Server Mode'));
         o.inputtitle = _('Start iPerf3 Server');
         o.onclick = this.handleStartServer;
 
         // Add a button to stop the iperf3 server
-        o = s.option(form.Button, '_stop_server', _('Stop Server'));
+        o = s.option(form.Button, '_stop_server', _('Stop iperf3'));
         o.inputtitle = _('Stop iPerf3 Server');
         o.onclick = this.handleStopServer;
 
-        // Add a placeholder for the results
-        o = s.option(form.DummyValue, '_results', _('Results'));
-        o.textvalue = '<div id="iperf3-results"></div>';
+        // Add a placeholder for the results and testing
+        //var se = uci.get_first('iperf3', 'iperf3', 'server');
+        //o = s.option(form.DummyValue, '_results', _(se));
+        //o.textvalue = 'test';
+        
 
         return m.render();
     },
 
-
-    // this function still has errors
     handleStartTest: function() {
-        var server = document.querySelector('[data-name="server"]').value;
-        var port = document.querySelector('[data-name="port"]').value || '5201';
-        var reverse = document.querySelector('[data-name="reverse"]').checked ? '-R' : '';
+        var server = uci.get_first('iperf3', 'iperf3', 'server');
+        var port = uci.get_first('iperf3', 'iperf3', 'port') || '5201';
+        // var reverse = uci.get_first('iperf3', 'iperf3', 'reverse') ? '-R' : '';
     
-        //var parameter = `-c ${server} -p ${port} ${reverse}`;
-        //var parameter = `-c 192.168.45.121 -p 5201`;
-
-        //befehl kurzgeschlossen
-        fs.exec('/usr/bin/iperf3', ['-c', '192.168.45.121', '-p', ' 5201']).then(function(res) {
+        fs.exec('/usr/bin/iperf3', ['-c', server, '-p', port]).then(function(res) {
                 // Check if res.stdout is defined
                 if (res.stdout && res.stdout.length > 0) {
                     document.getElementById('iperf3-results').innerText = res.stdout.trim();
@@ -93,3 +90,4 @@ return view.extend({
         });
     }
 });
+
