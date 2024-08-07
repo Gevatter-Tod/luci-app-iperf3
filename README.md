@@ -5,7 +5,8 @@ It allows iperf3 to be launched as server or client through the Luci Openwrt web
 It is written in JavaScript and aims to be very small, so it can also fit on devices with little storage.
 
 **Installation:**
-You currently need to manually copy the files onto the OpenWRT router.
-A opkg package is wip.
+In Luci / Openwrt go to System -> Software and upload the .ipk release file. Thats it.
+
+If you want to build the file yourself, follow the instructions found here: https://github.com/openwrt/luci/blob/master/applications/luci-app-example/BUILDING.md
 
 

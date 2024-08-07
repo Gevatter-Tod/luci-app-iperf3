@@ -1,11 +1,15 @@
-# NOT YET WORKING
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI support for iperf3
 LUCI_DEPENDS:=+iperf3
 LUCI_PKGARCH:=all
-PKG_VERSION:=1.0.0
+PKG_VERSION:=0.1
 PKG_RELEASE:=1
+
+
+PKG_LICENSE:=GPL-2.0
+
+PKG_MAINTAINER:=Gevatter-Tod
 
 include ../../luci.mk
 
