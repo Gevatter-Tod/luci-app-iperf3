@@ -9,4 +9,5 @@ In Luci / Openwrt go to System -> Software and upload the .ipk release file. Tha
 
 If you want to build the file yourself, follow the instructions found here: https://github.com/openwrt/luci/blob/master/applications/luci-app-example/BUILDING.md
 
-
+**Remarks**
+The app is based on the new Luci JavaScript based interface. It is thus not working on older Luci interfaces based on lua.
